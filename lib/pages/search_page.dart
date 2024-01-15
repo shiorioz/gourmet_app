@@ -14,36 +14,78 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   int? selectedRange = 3;
 
-  // クリアボタン押下時の処理
-  void _onPressedClearButton() {
-    setState(() {
-      selectedRange = 3;
-    });
-  }
+// TODO: ジャンルをAPIから取得する
+  final genres = [
+    '居酒屋',
+    'ダイニングバー・バル',
+    '創作料理',
+    '和食',
+    '洋食',
+    'イタリアン・フレンチ',
+    '中華',
+    '焼肉・ホルモン',
+    '韓国料理',
+    'アジア・エスニック料理',
+    '各国料理',
+    'カラオケ・パーティ',
+    'バー・カクテル',
+    'ラーメン',
+    'カフェ・スイーツ',
+    'お好み焼き・もんじゃ',
+    'その他グルメ',
+  ];
+  var selectedGenres = <String>[];
 
   // 検索ボタン押下時の処理
   void _onPressedSearchButton() {
     // TODO: selectedRangeを次のページに渡して遷移する
   }
 
+  // クリアボタン押下時の処理
+  void _onPressedClearButton() {
+    selectedGenres = <String>[];
+    setState(() {});
+  }
+
+  // 全てボタン押下時の処理
+  void _onPressedAllButton() {
+    selectedGenres.addAll(genres);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('Gourmet Search'),
-      ),
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              const GoogleMapWidget(),
-              const SizedBox(height: 20),
-              _inputRangeWidget()
-            ],
-          ),
-          _searchButtonWidget()
-        ],
+      // appBar: AppBar(
+      //   centerTitle: true,
+      //   title: const Text('Gourmet Search'),
+      // ),
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const GoogleMapWidget(),
+            const SizedBox(height: 20),
+            // --- 検索項目入力部分
+            Padding(
+              padding: const EdgeInsets.only(left: 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _inputRangeWidget(),
+                  const SizedBox(height: 20),
+                  NormalTextComponent(viewText: 'ジャンル'),
+                  const SizedBox(height: 20),
+                  _inputGenreWidget(),
+                ],
+              ),
+            ),
+            // --- 検索項目入力部分ここまで
+            const SizedBox(height: 20),
+            _searchButtonWidget(),
+            const SizedBox(height: 60),
+          ],
+        ),
       ),
     );
   }
@@ -59,9 +101,7 @@ class _SearchPageState extends State<SearchPage> {
     };
 
     return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        // const Text('現在地からの距離'),
         NormalTextComponent(viewText: '現在地からの距離'),
         const SizedBox(width: 20),
         DropdownButton<int>(
@@ -82,29 +122,102 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  // ジャンルを選択するウィジェット
+  Widget _inputGenreWidget() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // ジャンルのボタン
+        Wrap(
+          runSpacing: 16,
+          spacing: 16,
+          children: genres.map((genre) {
+            final isSelected = selectedGenres.contains(genre);
+
+            return InkWell(
+              borderRadius: const BorderRadius.all(Radius.circular(10)),
+              onTap: () {
+                if (selectedGenres.length == genres.length) {
+                  // 押されたボタンのみを非選択状態にする
+                  selectedGenres.remove(genre);
+                } else {
+                  if (isSelected) {
+                    selectedGenres.remove(genre);
+                  } else {
+                    selectedGenres.add(genre);
+                  }
+                }
+                setState(() {});
+              },
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(Radius.circular(32)),
+                  border: Border.all(
+                    width: 1.8,
+                    color: Constant.red,
+                  ),
+                  color: isSelected ? Constant.red : Colors.white,
+                ),
+                child: Text(
+                  genre,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : Constant.red,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            );
+          }).toList(),
+        ),
+        const SizedBox(height: 20),
+        // クリアボタン・全てボタン
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constant.blue,
+              ),
+              onPressed: _onPressedClearButton,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                child: Text('クリア',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600)),
+              ),
+            ),
+            const SizedBox(width: 20),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Constant.yellow,
+              ),
+              onPressed: _onPressedAllButton,
+              child: const Padding(
+                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                child: Text('全て',
+                    style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600)),
+              ),
+            ),
+          ],
+        )
+      ],
+    );
+  }
+
   // クリア・検索ボタン
   Widget _searchButtonWidget() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        SizedBox(height: MediaQuery.of(context).size.height * 0.8),
-        ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Constant.yellow,
-          ),
-          onPressed: _onPressedClearButton,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
-            child: Text('クリア',
-                style: TextStyle(
-                    fontSize: 18,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600)),
-          ),
-        ),
-        const SizedBox(width: 20),
-        ElevatedButton(
+    return Center(
+      child: SizedBox(
+        width: MediaQuery.of(context).size.width * 0.8,
+        child: ElevatedButton(
           style: ElevatedButton.styleFrom(
             backgroundColor: Constant.red,
           ),
@@ -112,10 +225,11 @@ class _SearchPageState extends State<SearchPage> {
           child: const Padding(
             padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(FontAwesomeIcons.magnifyingGlass,
                     size: 20, color: Colors.white),
-                SizedBox(width: 16),
+                SizedBox(width: 20),
                 Text('SEARCH',
                     style: TextStyle(
                       color: Colors.white,
@@ -125,7 +239,7 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }
