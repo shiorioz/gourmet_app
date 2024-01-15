@@ -45,3 +45,7 @@ app.*.map.json
 # iOS
 # APIキーを隠蔽する
 ios/Runner/Environment.swift
+
+# env
+*.env
+*env.g.dart

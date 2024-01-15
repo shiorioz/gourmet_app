@@ -66,6 +66,7 @@ Dart 3.2.4
 - Geocoding
 - Google Fonts
 - Font Awesome
+- envied
 
 ### ディレクトリ構成
 
