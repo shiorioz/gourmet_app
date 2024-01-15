@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gourmet_app/components/google_map_widget.dart';
+import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
 
 class SearchPage extends StatefulWidget {
@@ -12,6 +13,18 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   int? selectedRange = 3;
+
+  // クリアボタン押下時の処理
+  void _onPressedClearButton() {
+    setState(() {
+      selectedRange = 3;
+    });
+  }
+
+  // 検索ボタン押下時の処理
+  void _onPressedSearchButton() {
+    // TODO: selectedRangeを次のページに渡して遷移する
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,43 +39,10 @@ class _SearchPageState extends State<SearchPage> {
             children: [
               const GoogleMapWidget(),
               const SizedBox(height: 20),
-              _inputRangeWidget(),
+              _inputRangeWidget()
             ],
           ),
-          // クリアボタン・検索ボタン
-          Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Constant.yellow,
-                  ),
-                  onPressed: () {},
-                  child: const Text('クリア'),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Constant.red,
-                  ),
-                  onPressed: () {},
-                  child: const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                    child: Row(
-                      children: [
-                        Icon(FontAwesomeIcons.search,
-                            size: 20, color: Colors.white),
-                        SizedBox(width: 16),
-                        Text('SEARCH',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 22)),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          )
+          _searchButtonWidget()
         ],
       ),
     );
@@ -81,7 +61,8 @@ class _SearchPageState extends State<SearchPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        const Text('現在地からの距離'),
+        // const Text('現在地からの距離'),
+        NormalTextComponent(viewText: '現在地からの距離'),
         const SizedBox(width: 20),
         DropdownButton<int>(
           value: selectedRange,
@@ -93,10 +74,56 @@ class _SearchPageState extends State<SearchPage> {
               .toList(),
           onChanged: (int? value) {
             setState(() {
-              // TODO: 現在地からの範囲(selectedRange)を次のページに渡す
               selectedRange = value;
             });
           },
+        ),
+      ],
+    );
+  }
+
+  // クリア・検索ボタン
+  Widget _searchButtonWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        SizedBox(height: MediaQuery.of(context).size.height * 0.8),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Constant.yellow,
+          ),
+          onPressed: _onPressedClearButton,
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            child: Text('クリア',
+                style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600)),
+          ),
+        ),
+        const SizedBox(width: 20),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Constant.red,
+          ),
+          onPressed: _onPressedSearchButton,
+          child: const Padding(
+            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+            child: Row(
+              children: [
+                Icon(FontAwesomeIcons.magnifyingGlass,
+                    size: 20, color: Colors.white),
+                SizedBox(width: 16),
+                Text('SEARCH',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                    )),
+              ],
+            ),
+          ),
         ),
       ],
     );
