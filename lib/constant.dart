@@ -6,4 +6,12 @@ class Constant {
   static Color yellow = const Color(0xFFF8B042);
   static const Color darkGray = Color(0xFF343434);
   static const Color lightGray = Color(0xFFD9D9D9);
+
+  static const Map<int, double> rangeMap = {
+    1: 300,
+    2: 500,
+    3: 1000,
+    4: 2000,
+    5: 3000,
+  };
 }

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:gourmet_app/components/google_map_widget.dart';
 import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
 import 'package:gourmet_app/models/genre_model.dart';
+import 'package:gourmet_app/services/location.dart';
 
 import '../services/gourmet_api.dart';
 
@@ -20,7 +22,12 @@ class _SearchPageState extends State<SearchPage> {
   // 取得したジャンルを格納するリスト
   List<Genre> genres = [];
 
-  // 選択したパラメータを格納する変数
+  // 現在地を取得する非同期通信
+  late Future<Position> _getCurrentPosition;
+  // 現在地を格納する変数
+  late Position currentPosition;
+
+  // 選択したパラメータを格納する変数（初期値は1km）
   int? selectedRange = 3;
   List<Genre> selectedGenres = [];
 
@@ -28,11 +35,16 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     _fetchGenresFuture = _initGenres();
+    _getCurrentPosition = _initCurrentPosition();
     super.initState();
   }
 
   Future<List<Genre>> _initGenres() async {
     return await fetchGenres();
+  }
+
+  Future<Position> _initCurrentPosition() async {
+    return await getCurrentLocation();
   }
 
   // 検索ボタン押下時の処理
@@ -81,7 +93,33 @@ class _SearchPageState extends State<SearchPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const GoogleMapWidget(),
+                  // --- 現在地表示部分
+                  FutureBuilder(
+                      future: _getCurrentPosition,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        if (!snapshot.hasData) {
+                          return const Center(
+                            child: Text('データが取得できませんでした'),
+                          );
+                        }
+                        currentPosition = snapshot.data as Position;
+
+                        return GoogleMapWidget(
+                          key: UniqueKey(),
+                          currentLocation: currentPosition,
+                          range: Constant.rangeMap[selectedRange]!,
+                        );
+                      }),
+                  // --- 現在地表示部分ここまで
                   const SizedBox(height: 20),
                   // --- 検索項目入力部分
                   Padding(
@@ -110,24 +148,17 @@ class _SearchPageState extends State<SearchPage> {
 
   // 現在地からの距離を選択するウィジェット
   Widget _inputRangeWidget() {
-    const Map<int, String> rangeMap = {
-      1: '300m',
-      2: '500m',
-      3: '1km',
-      4: '2km',
-      5: '3km',
-    };
-
     return Row(
       children: [
         NormalTextComponent(viewText: '現在地からの距離'),
         const SizedBox(width: 20),
         DropdownButton<int>(
           value: selectedRange,
-          items: rangeMap.keys
+          items: Constant.rangeMap.keys
               .map((key) => DropdownMenuItem(
                     value: key,
-                    child: Text(rangeMap[key]!),
+                    child: NormalTextComponent(
+                        viewText: '${Constant.rangeMap[key]!.toInt()}m'),
                   ))
               .toList(),
           onChanged: (int? value) {
@@ -230,7 +261,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  // クリア・検索ボタン
+  // クリア・検索ボタンウィジェット
   Widget _searchButtonWidget() {
     return Center(
       child: SizedBox(
