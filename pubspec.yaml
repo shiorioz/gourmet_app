@@ -13,6 +13,8 @@ dependencies:
   font_awesome_flutter: ^10.6.0
   google_maps_flutter: ^2.5.3
   http: ^1.1.2
+  xml: ^6.5.0
+  xml2json: ^6.2.2
 
 dev_dependencies:
   flutter_test:

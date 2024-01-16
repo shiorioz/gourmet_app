@@ -3,6 +3,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gourmet_app/components/google_map_widget.dart';
 import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
+import 'package:gourmet_app/models/genre_model.dart';
+
+import '../services/gourmet_api.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -12,38 +15,34 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  int? selectedRange = 3;
+  // ジャンルを取得する非同期通信
+  late Future<List<Genre>> _fetchGenresFuture;
+  // 取得したジャンルを格納するリスト
+  List<Genre> genres = [];
 
-// TODO: ジャンルをAPIから取得する
-  final genres = [
-    '居酒屋',
-    'ダイニングバー・バル',
-    '創作料理',
-    '和食',
-    '洋食',
-    'イタリアン・フレンチ',
-    '中華',
-    '焼肉・ホルモン',
-    '韓国料理',
-    'アジア・エスニック料理',
-    '各国料理',
-    'カラオケ・パーティ',
-    'バー・カクテル',
-    'ラーメン',
-    'カフェ・スイーツ',
-    'お好み焼き・もんじゃ',
-    'その他グルメ',
-  ];
-  var selectedGenres = <String>[];
+  // 選択したパラメータを格納する変数
+  int? selectedRange = 3;
+  List<Genre> selectedGenres = [];
+
+  // 最初のみ実行される
+  @override
+  void initState() {
+    _fetchGenresFuture = _initGenres();
+    super.initState();
+  }
+
+  Future<List<Genre>> _initGenres() async {
+    return await fetchGenres();
+  }
 
   // 検索ボタン押下時の処理
   void _onPressedSearchButton() {
-    // TODO: selectedRangeを次のページに渡して遷移する
+    // TODO: selectedRange, selectedGenresを次のページに渡して遷移する
   }
 
   // クリアボタン押下時の処理
   void _onPressedClearButton() {
-    selectedGenres = <String>[];
+    selectedGenres = [];
     setState(() {});
   }
 
@@ -60,33 +59,52 @@ class _SearchPageState extends State<SearchPage> {
       //   centerTitle: true,
       //   title: const Text('Gourmet Search'),
       // ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const GoogleMapWidget(),
-            const SizedBox(height: 20),
-            // --- 検索項目入力部分
-            Padding(
-              padding: const EdgeInsets.only(left: 20),
+      // ジャンルを読み込んでから画面を表示する
+      body: FutureBuilder<List<Genre>>(
+          future: _fetchGenresFuture,
+          builder: (context, snapshot) {
+            // 読み込み中
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
+            // 読み込みエラー
+            if (!snapshot.hasData) {
+              return const Center(
+                child: Text('データが取得できませんでした'),
+              );
+            }
+            genres = snapshot.data!;
+
+            return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _inputRangeWidget(),
+                  const GoogleMapWidget(),
                   const SizedBox(height: 20),
-                  NormalTextComponent(viewText: 'ジャンル'),
+                  // --- 検索項目入力部分
+                  Padding(
+                    padding: const EdgeInsets.only(left: 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _inputRangeWidget(),
+                        const SizedBox(height: 20),
+                        NormalTextComponent(viewText: 'ジャンル'),
+                        const SizedBox(height: 20),
+                        _inputGenreWidget(),
+                      ],
+                    ),
+                  ),
+                  // --- 検索項目入力部分ここまで
                   const SizedBox(height: 20),
-                  _inputGenreWidget(),
+                  _searchButtonWidget(),
+                  const SizedBox(height: 60),
                 ],
               ),
-            ),
-            // --- 検索項目入力部分ここまで
-            const SizedBox(height: 20),
-            _searchButtonWidget(),
-            const SizedBox(height: 60),
-          ],
-        ),
-      ),
+            );
+          }),
     );
   }
 
@@ -162,7 +180,7 @@ class _SearchPageState extends State<SearchPage> {
                   color: isSelected ? Constant.red : Colors.white,
                 ),
                 child: Text(
-                  genre,
+                  genre.name,
                   style: TextStyle(
                     color: isSelected ? Colors.white : Constant.red,
                     fontWeight: FontWeight.bold,
