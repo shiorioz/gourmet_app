@@ -36,7 +36,6 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
     LatLng position =
         (LatLng(_currentLocation.latitude, _currentLocation.longitude));
 
-    // TODO: rangeが変更されたときに円の半径を変更する
     return SizedBox(
         height: MediaQuery.of(context).size.height * 0.3,
         child: GoogleMap(

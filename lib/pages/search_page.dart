@@ -52,18 +52,6 @@ class _SearchPageState extends State<SearchPage> {
     // TODO: selectedRange, selectedGenresを次のページに渡して遷移する
   }
 
-  // クリアボタン押下時の処理
-  void _onPressedClearButton() {
-    selectedGenres = [];
-    setState(() {});
-  }
-
-  // 全てボタン押下時の処理
-  void _onPressedAllButton() {
-    selectedGenres.addAll(genres);
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -173,92 +161,102 @@ class _SearchPageState extends State<SearchPage> {
 
   // ジャンルを選択するウィジェット
   Widget _inputGenreWidget() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // ジャンルのボタン
-        Wrap(
-          runSpacing: 16,
-          spacing: 16,
-          children: genres.map((genre) {
-            final isSelected = selectedGenres.contains(genre);
+    return StatefulBuilder(builder: (context, setState) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // ジャンルのボタン
+          Wrap(
+            runSpacing: 16,
+            spacing: 16,
+            children: genres.map((genre) {
+              final isSelected = selectedGenres.contains(genre);
 
-            return InkWell(
-              borderRadius: const BorderRadius.all(Radius.circular(10)),
-              onTap: () {
-                if (selectedGenres.length == genres.length) {
-                  // 押されたボタンのみを非選択状態にする
-                  selectedGenres.remove(genre);
-                } else {
-                  if (isSelected) {
+              return InkWell(
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
+                onTap: () {
+                  if (selectedGenres.length == genres.length) {
+                    // 押されたボタンのみを非選択状態にする
                     selectedGenres.remove(genre);
                   } else {
-                    selectedGenres.add(genre);
+                    if (isSelected) {
+                      selectedGenres.remove(genre);
+                    } else {
+                      selectedGenres.add(genre);
+                    }
                   }
-                }
-                setState(() {});
-              },
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(Radius.circular(32)),
-                  border: Border.all(
-                    width: 1.8,
-                    color: Constant.red,
+                  setState(() {});
+                },
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(32)),
+                    border: Border.all(
+                      width: 1.8,
+                      color: Constant.red,
+                    ),
+                    color: isSelected ? Constant.red : Colors.white,
                   ),
-                  color: isSelected ? Constant.red : Colors.white,
-                ),
-                child: Text(
-                  genre.name,
-                  style: TextStyle(
-                    color: isSelected ? Colors.white : Constant.red,
-                    fontWeight: FontWeight.bold,
+                  child: Text(
+                    genre.name,
+                    style: TextStyle(
+                      color: isSelected ? Colors.white : Constant.red,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
+              );
+            }).toList(),
+          ),
+          const SizedBox(height: 20),
+          // クリアボタン・全てボタン
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Constant.blue,
+                ),
+                onPressed: () {
+                  setState(() {
+                    selectedGenres = [];
+                  });
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                  child: Text('クリア',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600)),
+                ),
               ),
-            );
-          }).toList(),
-        ),
-        const SizedBox(height: 20),
-        // クリアボタン・全てボタン
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Constant.blue,
+              const SizedBox(width: 20),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Constant.yellow,
+                ),
+                onPressed: () {
+                  setState(() {
+                    selectedGenres.addAll(genres);
+                  });
+                },
+                child: const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
+                  child: Text('全て',
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600)),
+                ),
               ),
-              onPressed: _onPressedClearButton,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                child: Text('クリア',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600)),
-              ),
-            ),
-            const SizedBox(width: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Constant.yellow,
-              ),
-              onPressed: _onPressedAllButton,
-              child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 6, horizontal: 6),
-                child: Text('全て',
-                    style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600)),
-              ),
-            ),
-          ],
-        )
-      ],
-    );
+            ],
+          )
+        ],
+      );
+    });
   }
 
   // クリア・検索ボタンウィジェット
