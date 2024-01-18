@@ -6,6 +6,7 @@ import 'package:gourmet_app/models/genre_model.dart';
 import 'package:gourmet_app/models/shop_model.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:xml/xml.dart';
 
 // ジャンルを取得する非同期通信
@@ -38,8 +39,11 @@ Future<List<Genre>> fetchGenres() async {
 }
 
 // 条件が一致する店舗を取得する非同期通信
-Future<List<Shop>> fetchShops(
+Future<void> fetchShops(PagingController pagingController, int pageKey,
     Position currentPosition, double range, List<Genre> genres) async {
+  // 1ページあたりの取得件数
+  const perPage = 20;
+
   // Positionから緯度経度を取得
   final latitude = currentPosition.latitude;
   final longitude = currentPosition.longitude;
@@ -49,7 +53,7 @@ Future<List<Shop>> fetchShops(
 
   try {
     final url = Uri.parse(
-        'https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${Env.key}&lat=${latitude}&lng=${longitude}&range=${range}&genre=${genreCodes}&format=json');
+        'https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${Env.key}&lat=${latitude}&lng=${longitude}&range=${range}&genre=${genreCodes}&count=${perPage}&start=${pageKey * pageKey}&format=json');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -64,7 +68,18 @@ Future<List<Shop>> fetchShops(
         return Shop.fromJson(shop);
       }).toList();
 
-      return shops;
+      // ページが最後かどうかを判定する
+      // result_returnedをintに変換
+      final isLastPage =
+          int.parse(body['results']['results_returned']) != perPage;
+      if (isLastPage) {
+        // ページが最後の場合はページングを終了する
+        return Future.error('No more shops');
+      } else {
+        // ページが最後でない場合は次のページを読み込む
+        final nextPageKey = pageKey + 1;
+        pagingController.appendPage(shops, nextPageKey);
+      }
     } else {
       // エラーメッセージ取得
       final message =
@@ -72,6 +87,6 @@ Future<List<Shop>> fetchShops(
       return Future.error(message);
     }
   } catch (e) {
-    return Future.error('Faild to load shops');
+    return Future.error('Faild to load shops: $e');
   }
 }
