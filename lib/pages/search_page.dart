@@ -5,6 +5,7 @@ import 'package:gourmet_app/components/google_map_widget.dart';
 import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
 import 'package:gourmet_app/models/genre_model.dart';
+import 'package:gourmet_app/pages/shop_list_page.dart';
 import 'package:gourmet_app/services/location.dart';
 
 import '../services/gourmet_api.dart';
@@ -47,9 +48,15 @@ class _SearchPageState extends State<SearchPage> {
     return await getCurrentLocation();
   }
 
-  // 検索ボタン押下時の処理
+  // 検索ボタン押下時の処理（ShopListPageに遷移する）
   void _onPressedSearchButton() {
-    // TODO: selectedRange, selectedGenresを次のページに渡して遷移する
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ShopListPage(
+        currentPosition: currentPosition,
+        range: Constant.rangeMap[selectedRange!]!,
+        genres: selectedGenres,
+      );
+    }));
   }
 
   @override
