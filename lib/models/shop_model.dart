@@ -23,7 +23,7 @@ class Shop {
     return Shop(
       id: json['id'],
       name: json['name'],
-      image: json['logo_image'],
+      image: json['photo']['mobile']['l'] ?? json['photo']['mobile']['m'],
       stationName: json['station_name'],
       access: json['mobile_access'],
       genre: json['genre']['name'],

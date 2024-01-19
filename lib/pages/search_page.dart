@@ -53,7 +53,7 @@ class _SearchPageState extends State<SearchPage> {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ShopListPage(
         currentPosition: currentPosition,
-        range: Constant.rangeMap[selectedRange!]!,
+        range: selectedRange!,
         genres: selectedGenres,
       );
     }));

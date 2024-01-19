@@ -10,7 +10,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 class ShopListPage extends StatefulWidget {
   final Position currentPosition;
-  final double range;
+  final int range;
   final List<Genre> genres;
 
   const ShopListPage({
@@ -42,6 +42,12 @@ class _ShopListPageState extends State<ShopListPage> {
         widget.genres,
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
   }
 
   @override
@@ -81,6 +87,14 @@ class _ShopListPageState extends State<ShopListPage> {
                               ),
                               // 画像
                               leading: Image.network(item.image),
+                              // TODO: remove index
+                              trailing: Text(
+                                '${index + 1}',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                ),
+                              ),
                               // 店舗名
                               title: Text(item.name,
                                   style: const TextStyle(

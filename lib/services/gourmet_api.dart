@@ -40,7 +40,7 @@ Future<List<Genre>> fetchGenres() async {
 
 // 条件が一致する店舗を取得する非同期通信
 Future<void> fetchShops(PagingController pagingController, int pageKey,
-    Position currentPosition, double range, List<Genre> genres) async {
+    Position currentPosition, int range, List<Genre> genres) async {
   // 1ページあたりの取得件数
   const perPage = 20;
 
@@ -53,7 +53,8 @@ Future<void> fetchShops(PagingController pagingController, int pageKey,
 
   try {
     final url = Uri.parse(
-        'https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${Env.key}&lat=${latitude}&lng=${longitude}&range=${range}&genre=${genreCodes}&count=${perPage}&start=${pageKey * pageKey}&format=json');
+        'https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${Env.key}&lat=${latitude}&lng=${longitude}&range=${range}&genre=${genreCodes}&count=${perPage}&start=${(pageKey - 1) * perPage + 1}&format=json');
+    print(url);
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
@@ -70,11 +71,11 @@ Future<void> fetchShops(PagingController pagingController, int pageKey,
 
       // ページが最後かどうかを判定する
       // result_returnedをintに変換
-      final isLastPage =
-          int.parse(body['results']['results_returned']) != perPage;
+      final newShopCount = int.parse(body['results']['results_returned']);
+      final isLastPage = newShopCount < perPage && pageKey != 1;
       if (isLastPage) {
         // ページが最後の場合はページングを終了する
-        return Future.error('No more shops');
+        return pagingController.appendLastPage(shops);
       } else {
         // ページが最後でない場合は次のページを読み込む
         final nextPageKey = pageKey + 1;
