@@ -124,7 +124,7 @@ class _SearchPageState extends State<SearchPage> {
                       children: [
                         _inputRangeWidget(),
                         const SizedBox(height: 20),
-                        NormalTextComponent(viewText: 'ジャンル'),
+                        const NormalTextComponent(text: 'ジャンル', textSize: 18),
                         const SizedBox(height: 20),
                         _inputGenreWidget(),
                       ],
@@ -145,7 +145,10 @@ class _SearchPageState extends State<SearchPage> {
   Widget _inputRangeWidget() {
     return Row(
       children: [
-        NormalTextComponent(viewText: '現在地からの距離'),
+        const NormalTextComponent(
+          text: '現在地からの距離',
+          textSize: 18,
+        ),
         const SizedBox(width: 20),
         DropdownButton<int>(
           value: selectedRange,
@@ -153,7 +156,9 @@ class _SearchPageState extends State<SearchPage> {
               .map((key) => DropdownMenuItem(
                     value: key,
                     child: NormalTextComponent(
-                        viewText: '${Constant.rangeMap[key]!.toInt()}m'),
+                      text: '${Constant.rangeMap[key]!.toInt()}m',
+                      textSize: 18,
+                    ),
                   ))
               .toList(),
           onChanged: (int? value) {

@@ -53,7 +53,8 @@ class _ShopListPageState extends State<ShopListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: NormalTextComponent(viewText: 'GOURMET')),
+        appBar: AppBar(
+            title: const NormalTextComponent(text: 'GOURMET', textSize: 24)),
         body: Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
@@ -66,6 +67,12 @@ class _ShopListPageState extends State<ShopListPage> {
                     padding:
                         const EdgeInsets.symmetric(vertical: 20, horizontal: 8),
                     builderDelegate: PagedChildBuilderDelegate<Shop>(
+                      // データがない場合
+                      noItemsFoundIndicatorBuilder: (context) {
+                        return _notFoundWidget();
+                      },
+
+                      // データがある場合
                       itemBuilder: (context, item, index) {
                         return Padding(
                           padding: const EdgeInsets.symmetric(vertical: 6),
@@ -134,6 +141,27 @@ class _ShopListPageState extends State<ShopListPage> {
             ),
           ),
         ));
+  }
+
+  // データがない場合のウィジェット
+  Widget _notFoundWidget() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(
+            FontAwesomeIcons.magnifyingGlass,
+            size: 40,
+            color: Constant.red,
+          ),
+          const SizedBox(height: 20),
+          const NormalTextComponent(
+            text: '条件に一致する店舗が見つかりませんでした',
+            textSize: 16,
+          ),
+        ],
+      ),
+    );
   }
 
   // アイコンとテキストを横に並べたウィジェット
