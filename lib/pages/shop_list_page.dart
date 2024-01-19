@@ -60,11 +60,6 @@ class _ShopListPageState extends State<ShopListPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // NormalTextComponent(viewText: '現在地から${widget.range}m'),
-                // NormalTextComponent(
-                //     viewText:
-                //         'ジャンル：${widget.genres.map((e) => e.name).join(',')}'),
-                // 検索結果の表示
                 Expanded(
                   child: PagedListView<int, Shop>(
                     pagingController: _pagingController,
@@ -73,71 +68,64 @@ class _ShopListPageState extends State<ShopListPage> {
                     builderDelegate: PagedChildBuilderDelegate<Shop>(
                       itemBuilder: (context, item, index) {
                         return Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              // 枠線
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  color: Constant.darkGray,
-                                  width: 0.6,
+                          padding: const EdgeInsets.symmetric(vertical: 6),
+                          child: Card(
+                            clipBehavior: Clip.antiAlias,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            surfaceTintColor: Colors.white,
+                            child: Column(
+                              children: [
+                                Ink.image(
+                                  image: NetworkImage(item.image),
+                                  height: 140,
+                                  fit: BoxFit.cover,
                                 ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              // 画像
-                              leading: Image.network(item.image),
-                              // TODO: remove index
-                              trailing: Text(
-                                '${index + 1}',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 18,
-                                ),
-                              ),
-                              // 店舗名
-                              title: Text(item.name,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18)),
-                              // 情報
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Wrap(
-                                    children: [
-                                      // マップアイコン
-                                      RichText(
-                                        text: TextSpan(
-                                          children: [
-                                            const WidgetSpan(
-                                              child: Padding(
-                                                padding:
-                                                    EdgeInsets.only(right: 6),
-                                                child: Icon(
-                                                  FontAwesomeIcons.trainSubway,
-                                                  size: 16,
-                                                  color: Constant.darkGray,
-                                                ),
-                                              ),
-                                            ),
-                                            TextSpan(
-                                              text: item.stationName,
-                                              style: const TextStyle(
-                                                color: Constant.darkGray,
-                                              ),
-                                            ),
-                                          ],
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                    horizontal: 16,
+                                  ),
+                                  child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.name,
                                           style: const TextStyle(
-                                            color: Constant.darkGray,
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                      )
-                                    ],
-                                  )
-                                ],
-                              ),
-                            ));
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 8, top: 4),
+                                          child: Column(
+                                            children: [
+                                              _iconTextWidget(
+                                                  icon:
+                                                      FontAwesomeIcons.utensils,
+                                                  text: item.genre),
+                                              const SizedBox(height: 4),
+                                              _iconTextWidget(
+                                                  icon: FontAwesomeIcons
+                                                      .locationDot,
+                                                  text: item.access),
+                                              const SizedBox(height: 4),
+                                              _iconTextWidget(
+                                                  icon: FontAwesomeIcons
+                                                      .sackDollar,
+                                                  text: item.budget),
+                                            ],
+                                          ),
+                                        )
+                                      ]),
+                                )
+                              ],
+                            ),
+                          ),
+                        );
                       },
                     ),
                   ),
@@ -146,5 +134,32 @@ class _ShopListPageState extends State<ShopListPage> {
             ),
           ),
         ));
+  }
+
+  // アイコンとテキストを横に並べたウィジェット
+  Widget _iconTextWidget({required IconData icon, required String text}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Icon(
+            icon,
+            size: 14,
+            color: Constant.darkGray,
+          ),
+        ),
+        const SizedBox(width: 8),
+        Flexible(
+          child: Text(
+            text,
+            style: const TextStyle(
+              fontSize: 14,
+              color: Constant.darkGray,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

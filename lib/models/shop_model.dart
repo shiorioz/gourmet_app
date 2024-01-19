@@ -7,6 +7,7 @@ class Shop {
   final String genre;
   final String address;
   final String openTime;
+  final String budget;
 
   Shop({
     required this.id,
@@ -17,6 +18,7 @@ class Shop {
     required this.genre,
     required this.address,
     required this.openTime,
+    required this.budget,
   });
 
   factory Shop.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class Shop {
       genre: json['genre']['name'],
       address: json['address'],
       openTime: json['open'],
+      budget: json['budget']['name'],
     );
   }
 }
