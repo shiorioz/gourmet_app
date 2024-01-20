@@ -51,6 +51,11 @@ class _ShopListPageState extends State<ShopListPage> {
     super.dispose();
   }
 
+  // 店舗ウィジェットをタップした時の処理
+  void _onTapShop(BuildContext context, Shop item) {
+    print('店舗ウィジェットをタップしました: ${item.name}');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,65 +79,7 @@ class _ShopListPageState extends State<ShopListPage> {
 
                       // データがある場合
                       itemBuilder: (context, item, index) {
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 6),
-                          child: Card(
-                            clipBehavior: Clip.antiAlias,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            surfaceTintColor: Colors.white,
-                            child: Column(
-                              children: [
-                                Ink.image(
-                                  image: NetworkImage(item.image),
-                                  height: 140,
-                                  fit: BoxFit.cover,
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                    horizontal: 16,
-                                  ),
-                                  child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          item.name,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.bold,
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 8, top: 4),
-                                          child: Column(
-                                            children: [
-                                              _iconTextWidget(
-                                                  icon:
-                                                      FontAwesomeIcons.utensils,
-                                                  text: item.genre),
-                                              const SizedBox(height: 4),
-                                              _iconTextWidget(
-                                                  icon: FontAwesomeIcons
-                                                      .locationDot,
-                                                  text: item.access),
-                                              const SizedBox(height: 4),
-                                              _iconTextWidget(
-                                                  icon: FontAwesomeIcons
-                                                      .sackDollar,
-                                                  text: item.budget),
-                                            ],
-                                          ),
-                                        )
-                                      ]),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
+                        return _shopListWidget(context, item, index);
                       },
                     ),
                   ),
@@ -160,6 +107,73 @@ class _ShopListPageState extends State<ShopListPage> {
             textSize: 16,
           ),
         ],
+      ),
+    );
+  }
+
+  // 店舗リストのウィジェット
+  Widget _shopListWidget(BuildContext context, Shop item, int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: GestureDetector(
+        onTap: () => _onTapShop(context, item),
+        child: Card(
+          clipBehavior: Clip.antiAlias,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          surfaceTintColor: Colors.white,
+          child: Column(
+            children: [
+              // 店舗画像
+              Ink.image(
+                image: NetworkImage(item.image),
+                height: 140,
+                fit: BoxFit.cover,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 16,
+                ),
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // 店舗名
+                      Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8, top: 8),
+                        child: Column(
+                          children: [
+                            // ジャンル
+                            _iconTextWidget(
+                                icon: FontAwesomeIcons.utensils,
+                                text: item.genre),
+                            const SizedBox(height: 4),
+                            // アクセス
+                            _iconTextWidget(
+                                icon: FontAwesomeIcons.locationDot,
+                                text: item.access),
+                            const SizedBox(height: 4),
+                            // 予算
+                            _iconTextWidget(
+                              icon: FontAwesomeIcons.sackDollar,
+                              text: item.budget == '' ? '情報なし' : item.budget,
+                            ),
+                          ],
+                        ),
+                      )
+                    ]),
+              )
+            ],
+          ),
+        ),
       ),
     );
   }
