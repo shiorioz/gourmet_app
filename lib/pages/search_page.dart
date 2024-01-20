@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gourmet_app/components/app_bar_widget.dart';
 import 'package:gourmet_app/components/google_map_widget.dart';
 import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
 import 'package:gourmet_app/models/genre_model.dart';
+import 'package:gourmet_app/pages/shop_list_page.dart';
 import 'package:gourmet_app/services/location.dart';
 
 import '../services/gourmet_api.dart';
@@ -47,18 +49,21 @@ class _SearchPageState extends State<SearchPage> {
     return await getCurrentLocation();
   }
 
-  // 検索ボタン押下時の処理
+  // 検索ボタン押下時の処理（ShopListPageに遷移する）
   void _onPressedSearchButton() {
-    // TODO: selectedRange, selectedGenresを次のページに渡して遷移する
+    Navigator.push(context, MaterialPageRoute(builder: (context) {
+      return ShopListPage(
+        currentPosition: currentPosition,
+        range: selectedRange!,
+        genres: selectedGenres,
+      );
+    }));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text('Gourmet Search'),
-      // ),
+      appBar: const AppBarWidget(),
       // ジャンルを読み込んでから画面を表示する
       body: FutureBuilder<List<Genre>>(
           future: _fetchGenresFuture,
@@ -79,7 +84,7 @@ class _SearchPageState extends State<SearchPage> {
 
             return SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // --- 現在地表示部分
                   FutureBuilder(
@@ -117,7 +122,7 @@ class _SearchPageState extends State<SearchPage> {
                       children: [
                         _inputRangeWidget(),
                         const SizedBox(height: 20),
-                        NormalTextComponent(viewText: 'ジャンル'),
+                        const NormalTextComponent(text: 'ジャンル', textSize: 18),
                         const SizedBox(height: 20),
                         _inputGenreWidget(),
                       ],
@@ -138,7 +143,10 @@ class _SearchPageState extends State<SearchPage> {
   Widget _inputRangeWidget() {
     return Row(
       children: [
-        NormalTextComponent(viewText: '現在地からの距離'),
+        const NormalTextComponent(
+          text: '現在地からの距離',
+          textSize: 18,
+        ),
         const SizedBox(width: 20),
         DropdownButton<int>(
           value: selectedRange,
@@ -146,7 +154,9 @@ class _SearchPageState extends State<SearchPage> {
               .map((key) => DropdownMenuItem(
                     value: key,
                     child: NormalTextComponent(
-                        viewText: '${Constant.rangeMap[key]!.toInt()}m'),
+                      text: '${Constant.rangeMap[key]!.toInt()}m',
+                      textSize: 18,
+                    ),
                   ))
               .toList(),
           onChanged: (int? value) {
@@ -221,7 +231,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 onPressed: () {
                   setState(() {
-                    selectedGenres = [];
+                    selectedGenres.clear();
                   });
                 },
                 child: const Padding(
@@ -240,6 +250,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 onPressed: () {
                   setState(() {
+                    selectedGenres.clear();
                     selectedGenres.addAll(genres);
                   });
                 },

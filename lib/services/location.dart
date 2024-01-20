@@ -30,6 +30,5 @@ Future<Position> getCurrentLocation() async {
   // 現在地を返す
   final position = await Geolocator.getCurrentPosition();
 
-  print(position);
   return position;
 }
