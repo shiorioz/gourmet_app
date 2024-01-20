@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gourmet_app/components/app_bar_widget.dart';
 import 'package:gourmet_app/components/google_map_widget.dart';
 import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
@@ -62,10 +63,7 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   centerTitle: true,
-      //   title: const Text('Gourmet Search'),
-      // ),
+      appBar: const AppBarWidget(),
       // ジャンルを読み込んでから画面を表示する
       body: FutureBuilder<List<Genre>>(
           future: _fetchGenresFuture,
@@ -86,7 +84,7 @@ class _SearchPageState extends State<SearchPage> {
 
             return SingleChildScrollView(
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   // --- 現在地表示部分
                   FutureBuilder(
@@ -233,7 +231,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 onPressed: () {
                   setState(() {
-                    selectedGenres = [];
+                    selectedGenres.clear();
                   });
                 },
                 child: const Padding(
@@ -252,6 +250,7 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 onPressed: () {
                   setState(() {
+                    selectedGenres.clear();
                     selectedGenres.addAll(genres);
                   });
                 },

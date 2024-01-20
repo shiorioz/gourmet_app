@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gourmet_app/pages/search_page.dart';
 
 void main() {
@@ -10,8 +11,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: SearchPage(),
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: GoogleFonts.notoSansJp().fontFamily,
+      ),
+      home: const SearchPage(),
     );
   }
 }

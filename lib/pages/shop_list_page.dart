@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gourmet_app/components/app_bar_widget.dart';
 import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
 import 'package:gourmet_app/models/genre_model.dart';
@@ -53,8 +54,7 @@ class _ShopListPageState extends State<ShopListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-            title: const NormalTextComponent(text: 'GOURMET', textSize: 24)),
+        appBar: const AppBarWidget(),
         body: Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
