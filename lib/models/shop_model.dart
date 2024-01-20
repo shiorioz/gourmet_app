@@ -1,6 +1,8 @@
 class Shop {
   final String id;
   final String name;
+  final double lat;
+  final double lng;
   final String image;
   final String stationName;
   final String access;
@@ -12,6 +14,8 @@ class Shop {
   Shop({
     required this.id,
     required this.name,
+    required this.lat,
+    required this.lng,
     required this.image,
     required this.stationName,
     required this.access,
@@ -25,6 +29,8 @@ class Shop {
     return Shop(
       id: json['id'],
       name: json['name'],
+      lat: json['lat'],
+      lng: json['lng'],
       image: json['photo']['mobile']['l'] ?? json['photo']['mobile']['m'],
       stationName: json['station_name'],
       access: json['mobile_access'],

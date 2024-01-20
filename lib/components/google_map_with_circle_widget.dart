@@ -4,18 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class GoogleMapWidget extends StatefulWidget {
+class GoogleMapWithCircleWidget extends StatefulWidget {
   final Position currentLocation;
   final double range;
 
-  const GoogleMapWidget(
+  const GoogleMapWithCircleWidget(
       {super.key, required this.currentLocation, required this.range});
 
   @override
-  State<GoogleMapWidget> createState() => _GoogleMapWidgetState();
+  State<GoogleMapWithCircleWidget> createState() =>
+      _GoogleMapWithCircleWidgetState();
 }
 
-class _GoogleMapWidgetState extends State<GoogleMapWidget> {
+class _GoogleMapWithCircleWidgetState extends State<GoogleMapWithCircleWidget> {
   late Position _currentLocation;
   late double _range;
   late GoogleMapController mapController;
@@ -47,6 +48,7 @@ class _GoogleMapWidgetState extends State<GoogleMapWidget> {
           onMapCreated: _onMapCreated,
           myLocationEnabled: true,
           scrollGesturesEnabled: true,
+          // SingleChildScrollVer内でもスクロールできるようにする
           gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{
             Factory<OneSequenceGestureRecognizer>(
                 () => EagerGestureRecognizer())

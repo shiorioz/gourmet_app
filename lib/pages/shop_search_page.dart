@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:gourmet_app/components/app_bar_widget.dart';
-import 'package:gourmet_app/components/google_map_widget.dart';
+import 'package:gourmet_app/components/google_map_with_circle_widget.dart';
 import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
 import 'package:gourmet_app/models/genre_model.dart';
@@ -11,14 +12,14 @@ import 'package:gourmet_app/services/location.dart';
 
 import '../services/gourmet_api.dart';
 
-class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+class ShopSearchPage extends StatefulWidget {
+  const ShopSearchPage({super.key});
 
   @override
-  State<SearchPage> createState() => _SearchPageState();
+  State<ShopSearchPage> createState() => _ShopSearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _ShopSearchPageState extends State<ShopSearchPage> {
   // ジャンルを取得する非同期通信
   late Future<List<Genre>> _fetchGenresFuture;
   // 取得したジャンルを格納するリスト
@@ -63,7 +64,10 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBarWidget(),
+      appBar: AppBarWidget(
+        title: 'Gourmet App',
+        appBarColor: Constant.blue,
+      ),
       // ジャンルを読み込んでから画面を表示する
       body: FutureBuilder<List<Genre>>(
           future: _fetchGenresFuture,
@@ -106,7 +110,7 @@ class _SearchPageState extends State<SearchPage> {
                         }
                         currentPosition = snapshot.data as Position;
 
-                        return GoogleMapWidget(
+                        return GoogleMapWithCircleWidget(
                           key: UniqueKey(),
                           currentLocation: currentPosition,
                           range: Constant.rangeMap[selectedRange]!,
@@ -280,18 +284,21 @@ class _SearchPageState extends State<SearchPage> {
             backgroundColor: Constant.red,
           ),
           onPressed: _onPressedSearchButton,
-          child: const Padding(
-            padding: EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(FontAwesomeIcons.magnifyingGlass,
+                const Icon(FontAwesomeIcons.magnifyingGlass,
                     size: 20, color: Colors.white),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 Text('SEARCH',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
+                      fontFamily: GoogleFonts.montserrat().fontFamily,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 2,
                     )),
               ],
             ),
