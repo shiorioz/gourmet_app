@@ -6,6 +6,7 @@ import 'package:gourmet_app/components/text_widget.dart';
 import 'package:gourmet_app/constant.dart';
 import 'package:gourmet_app/models/genre_model.dart';
 import 'package:gourmet_app/models/shop_model.dart';
+import 'package:gourmet_app/pages/shop_detail_page.dart';
 import 'package:gourmet_app/services/gourmet_api.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
@@ -53,7 +54,12 @@ class _ShopListPageState extends State<ShopListPage> {
 
   // 店舗ウィジェットをタップした時の処理
   void _onTapShop(BuildContext context, Shop item) {
-    print('店舗ウィジェットをタップしました: ${item.name}');
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ShopDetailPage(shop: item),
+      ),
+    );
   }
 
   @override

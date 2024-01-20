@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:gourmet_app/pages/search_page.dart';
+import 'package:gourmet_app/pages/shop_search_page.dart';
 
 void main() {
   runApp(const MainApp());
@@ -15,7 +15,7 @@ class MainApp extends StatelessWidget {
       theme: ThemeData(
         fontFamily: GoogleFonts.notoSansJp().fontFamily,
       ),
-      home: const SearchPage(),
+      home: const ShopSearchPage(),
     );
   }
 }
