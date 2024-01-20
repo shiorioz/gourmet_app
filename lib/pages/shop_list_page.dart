@@ -65,7 +65,10 @@ class _ShopListPageState extends State<ShopListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: const AppBarWidget(),
+        appBar: AppBarWidget(
+          title: 'List',
+          appBarColor: Constant.blue,
+        ),
         body: Center(
           child: SizedBox(
             width: MediaQuery.of(context).size.width * 0.9,
