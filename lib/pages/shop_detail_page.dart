@@ -91,7 +91,8 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
                   _detailContentWidget(
                     icon: FontAwesomeIcons.sackDollar,
                     titleText: '予算',
-                    contentText: widget.shop.budget,
+                    contentText:
+                        widget.shop.budget == '' ? '情報なし' : widget.shop.budget,
                   ),
                   const SizedBox(height: 20),
                 ],
