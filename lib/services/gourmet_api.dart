@@ -53,8 +53,7 @@ Future<void> fetchShops(PagingController pagingController, int pageKey,
 
   try {
     final url = Uri.parse(
-        'https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${Env.key}&lat=${latitude}&lng=${longitude}&range=${range}&genre=${genreCodes}&count=${perPage}&start=${(pageKey - 1) * perPage + 1}&format=json');
-    print(url);
+        'https://webservice.recruit.co.jp/hotpepper/gourmet/v1/?key=${Env.key}&lat=$latitude&lng=$longitude&range=$range&genre=$genreCodes&count=$perPage&start=${(pageKey - 1) * perPage + 1}&format=json');
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
