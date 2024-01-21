@@ -124,9 +124,38 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _inputRangeWidget(),
+                        Row(
+                          children: [
+                            const Row(
+                              children: [
+                                Icon(
+                                  FontAwesomeIcons.locationDot,
+                                  size: 18,
+                                  color: Constant.darkGray,
+                                ),
+                                SizedBox(width: 10),
+                                NormalTextComponent(
+                                  text: '現在地からの距離',
+                                  textSize: 18,
+                                ),
+                              ],
+                            ),
+                            const SizedBox(width: 20),
+                            _inputRangeWidget(),
+                          ],
+                        ),
                         const SizedBox(height: 20),
-                        const NormalTextComponent(text: 'ジャンル', textSize: 18),
+                        const Row(
+                          children: [
+                            Icon(
+                              FontAwesomeIcons.utensils,
+                              size: 18,
+                              color: Constant.darkGray,
+                            ),
+                            SizedBox(width: 10),
+                            NormalTextComponent(text: 'ジャンル', textSize: 18),
+                          ],
+                        ),
                         const SizedBox(height: 20),
                         _inputGenreWidget(),
                       ],
@@ -145,31 +174,22 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
 
   // 現在地からの距離を選択するウィジェット
   Widget _inputRangeWidget() {
-    return Row(
-      children: [
-        const NormalTextComponent(
-          text: '現在地からの距離',
-          textSize: 18,
-        ),
-        const SizedBox(width: 20),
-        DropdownButton<int>(
-          value: selectedRange,
-          items: Constant.rangeMap.keys
-              .map((key) => DropdownMenuItem(
-                    value: key,
-                    child: NormalTextComponent(
-                      text: '${Constant.rangeMap[key]!.toInt()}m',
-                      textSize: 18,
-                    ),
-                  ))
-              .toList(),
-          onChanged: (int? value) {
-            setState(() {
-              selectedRange = value;
-            });
-          },
-        ),
-      ],
+    return DropdownButton<int>(
+      value: selectedRange,
+      items: Constant.rangeMap.keys
+          .map((key) => DropdownMenuItem(
+                value: key,
+                child: NormalTextComponent(
+                  text: '${Constant.rangeMap[key]!.toInt()}m',
+                  textSize: 18,
+                ),
+              ))
+          .toList(),
+      onChanged: (int? value) {
+        setState(() {
+          selectedRange = value;
+        });
+      },
     );
   }
 

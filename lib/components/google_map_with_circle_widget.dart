@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:gourmet_app/constant.dart';
 
 class GoogleMapWithCircleWidget extends StatefulWidget {
   final Position currentLocation;
@@ -58,8 +59,8 @@ class _GoogleMapWithCircleWidgetState extends State<GoogleMapWithCircleWidget> {
               circleId: const CircleId('Circle1'),
               center: position,
               radius: _range, //半径(m)
-              strokeColor: Colors.pink.withOpacity(0.8),
-              fillColor: Colors.pink.withOpacity(0.2),
+              strokeColor: Constant.red,
+              fillColor: Constant.red.withOpacity(0.2),
               strokeWidth: 2,
             )
           },
