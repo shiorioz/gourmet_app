@@ -4,6 +4,7 @@ class Shop {
   final double lat;
   final double lng;
   final String image;
+  final String catchText;
   final String stationName;
   final String access;
   final String genre;
@@ -17,6 +18,7 @@ class Shop {
     required this.lat,
     required this.lng,
     required this.image,
+    required this.catchText,
     required this.stationName,
     required this.access,
     required this.genre,
@@ -32,6 +34,7 @@ class Shop {
       lat: json['lat'],
       lng: json['lng'],
       image: json['photo']['mobile']['l'] ?? json['photo']['mobile']['m'],
+      catchText: json['catch'],
       stationName: json['station_name'],
       access: json['mobile_access'],
       genre: json['genre']['name'],

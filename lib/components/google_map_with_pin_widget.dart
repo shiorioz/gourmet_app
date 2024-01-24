@@ -32,7 +32,7 @@ class _GoogleMapWithPinWidgetState extends State<GoogleMapWithPinWidget> {
     return GoogleMap(
       initialCameraPosition: CameraPosition(
         target: widget.targetPosition,
-        zoom: 12.0,
+        zoom: 14.0,
       ),
       // SingleChildScrollVer内でもスクロールできるようにする
       gestureRecognizers: <Factory<OneSequenceGestureRecognizer>>{

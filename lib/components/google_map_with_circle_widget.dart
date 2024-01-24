@@ -3,10 +3,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:gourmet_app/constant.dart';
 
 class GoogleMapWithCircleWidget extends StatefulWidget {
   final Position currentLocation;
-  final double range;
+  final int range;
 
   const GoogleMapWithCircleWidget(
       {super.key, required this.currentLocation, required this.range});
@@ -17,16 +18,7 @@ class GoogleMapWithCircleWidget extends StatefulWidget {
 }
 
 class _GoogleMapWithCircleWidgetState extends State<GoogleMapWithCircleWidget> {
-  late Position _currentLocation;
-  late double _range;
   late GoogleMapController mapController;
-
-  @override
-  void initState() {
-    _currentLocation = widget.currentLocation;
-    _range = widget.range;
-    super.initState();
-  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -34,8 +26,8 @@ class _GoogleMapWithCircleWidgetState extends State<GoogleMapWithCircleWidget> {
 
   @override
   Widget build(BuildContext context) {
-    LatLng position =
-        (LatLng(_currentLocation.latitude, _currentLocation.longitude));
+    LatLng position = (LatLng(
+        widget.currentLocation.latitude, widget.currentLocation.longitude));
 
     return SizedBox(
         height: MediaQuery.of(context).size.height * 0.3,
@@ -43,7 +35,7 @@ class _GoogleMapWithCircleWidgetState extends State<GoogleMapWithCircleWidget> {
           zoomGesturesEnabled: true,
           initialCameraPosition: CameraPosition(
             target: position,
-            zoom: 14.0,
+            zoom: Constant.zoomLevelMap[widget.range]!,
           ),
           onMapCreated: _onMapCreated,
           myLocationEnabled: true,
@@ -57,9 +49,9 @@ class _GoogleMapWithCircleWidgetState extends State<GoogleMapWithCircleWidget> {
             Circle(
               circleId: const CircleId('Circle1'),
               center: position,
-              radius: _range, //半径(m)
-              strokeColor: Colors.pink.withOpacity(0.8),
-              fillColor: Colors.pink.withOpacity(0.2),
+              radius: Constant.rangeMap[widget.range]!, //半径(m)
+              strokeColor: Constant.red,
+              fillColor: Constant.red.withOpacity(0.2),
               strokeWidth: 2,
             )
           },

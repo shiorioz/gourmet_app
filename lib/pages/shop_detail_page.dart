@@ -33,6 +33,20 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
               fit: BoxFit.cover,
               image: NetworkImage(widget.shop.image),
             ),
+            // 画像提供の表記
+            const Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  '画像提供：ホットペッパー グルメ',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Constant.darkGray,
+                  ),
+                ),
+              ),
+            ),
             // テキスト
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -51,6 +65,19 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
                       ),
                     ),
                   ),
+                  // キャッチコピー
+                  widget.shop.catchText != ''
+                      ? Padding(
+                          padding: const EdgeInsets.only(top: 8, left: 16),
+                          child: Text(
+                            widget.shop.catchText,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              color: Constant.darkGray,
+                            ),
+                          ),
+                        )
+                      : const SizedBox(),
                   const SizedBox(height: 8),
                   // 住所
                   _detailContentWidget(
@@ -60,8 +87,6 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
                   ),
                   const SizedBox(height: 8),
                   // GoogleMap
-                  // これだけ右寄せ
-
                   Padding(
                     padding: const EdgeInsets.only(left: 30),
                     child: Align(
@@ -113,6 +138,11 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: Column(
         children: [
+          // 区切り線
+          const Divider(height: 1, color: Constant.lightGray),
+          const SizedBox(height: 8),
+          // 区切り線ここまで
+          // アイコン + タイトル + 内容
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
