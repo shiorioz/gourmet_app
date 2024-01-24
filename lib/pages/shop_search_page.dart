@@ -9,6 +9,7 @@ import 'package:gourmet_app/constant.dart';
 import 'package:gourmet_app/models/genre_model.dart';
 import 'package:gourmet_app/pages/shop_list_page.dart';
 import 'package:gourmet_app/services/location.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../services/gourmet_api.dart';
 
@@ -31,7 +32,7 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
   late Position currentPosition;
 
   // 選択したパラメータを格納する変数（初期値は1km）
-  int? selectedRange = 3;
+  int selectedRange = 3;
   List<Genre> selectedGenres = [];
 
   // 最初のみ実行される
@@ -50,12 +51,21 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
     return await getCurrentLocation();
   }
 
+  Future<void> _launchInBrowser(Uri url) async {
+    if (!await launchUrl(
+      url,
+      mode: LaunchMode.externalApplication,
+    )) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
   // 検索ボタン押下時の処理（ShopListPageに遷移する）
   void _onPressedSearchButton() {
     Navigator.push(context, MaterialPageRoute(builder: (context) {
       return ShopListPage(
         currentPosition: currentPosition,
-        range: selectedRange!,
+        range: selectedRange,
         genres: selectedGenres,
       );
     }));
@@ -63,12 +73,13 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    final Uri toLaunch = Uri.parse('http://webservice.recruit.co.jp/');
     return Scaffold(
       appBar: AppBarWidget(
         title: 'Gourmet App',
         appBarColor: Constant.blue,
       ),
-      // ジャンルを読み込んでから画面を表示する
+      // ジャンルを読み込んでから画面全体を表示する
       body: FutureBuilder<List<Genre>>(
           future: _fetchGenresFuture,
           builder: (context, snapshot) {
@@ -86,6 +97,7 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
             }
             genres = snapshot.data!;
 
+            // 読み込み成功
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -113,7 +125,7 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
                         return GoogleMapWithCircleWidget(
                           key: UniqueKey(),
                           currentLocation: currentPosition,
-                          range: Constant.rangeMap[selectedRange]!,
+                          range: selectedRange,
                         );
                       }),
                   // --- 現在地表示部分ここまで
@@ -164,6 +176,48 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
                   // --- 検索項目入力部分ここまで
                   const SizedBox(height: 20),
                   _searchButtonWidget(),
+                  const SizedBox(height: 20),
+                  // クレジット表記
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: Text(
+                          'Powered by',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Constant.darkGray,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      TextButton(
+                          onPressed: () => setState(() {
+                                _launchInBrowser(toLaunch);
+                              }),
+                          style: TextButton.styleFrom(
+                            padding: const EdgeInsets.only(left: 6),
+                            foregroundColor: Constant.darkGray,
+                          ),
+                          child: const Text(
+                            "ホットペッパーグルメ Webサービス",
+                            style: TextStyle(
+                              color: Colors.transparent,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              decoration: TextDecoration.underline,
+                              decorationColor: Colors.black,
+                              shadows: [
+                                Shadow(
+                                  offset: Offset(0, -6),
+                                ),
+                              ],
+                            ),
+                          ))
+                    ],
+                  ),
+                  // クレジット表記ここまで
                   const SizedBox(height: 60),
                 ],
               ),
@@ -187,7 +241,7 @@ class _ShopSearchPageState extends State<ShopSearchPage> {
           .toList(),
       onChanged: (int? value) {
         setState(() {
-          selectedRange = value;
+          selectedRange = value!;
         });
       },
     );
