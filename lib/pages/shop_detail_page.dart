@@ -33,6 +33,20 @@ class _ShopDetailPageState extends State<ShopDetailPage> {
               fit: BoxFit.cover,
               image: NetworkImage(widget.shop.image),
             ),
+            // 画像提供の表記
+            const Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Text(
+                  '画像提供：ホットペッパー グルメ',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Constant.darkGray,
+                  ),
+                ),
+              ),
+            ),
             // テキスト
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
