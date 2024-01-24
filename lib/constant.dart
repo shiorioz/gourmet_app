@@ -8,11 +8,21 @@ class Constant {
   static const Color darkGray = Color(0xFF343434);
   static const Color lightGray = Color(0xFFD9D9D9);
 
+  // mapに使用する半径の値
   static const Map<int, double> rangeMap = {
     1: 300,
     2: 500,
     3: 1000,
     4: 2000,
     5: 3000,
+  };
+
+  // mapに使用するズームレベルの値
+  static const Map<int, double> zoomLevelMap = {
+    1: 15,
+    2: 15,
+    3: 14,
+    4: 13,
+    5: 12,
   };
 }
